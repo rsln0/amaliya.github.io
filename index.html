@@ -1100,10 +1100,11 @@
             transform: rotate(-10deg);
         }
 
-        /* Caption styling */
+        /* Caption styling - MODIFIÉ pour s'adapter au texte */
         .caption-box {
             position: absolute;
-            max-width: 320px;
+            max-width: 350px;
+            width: auto;
         }
 
         .caption-box.top-right-caption {
@@ -1118,14 +1119,17 @@
 
         .caption-text {
             font-family: 'Pacifico', cursive;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             color: #555;
-            line-height: 1.8;
-            padding: 20px;
+            line-height: 1.6;
+            padding: 18px 22px;
             background: rgba(255, 255, 255, 0.9);
             border-left: 4px solid #ff1744;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
             border-radius: 4px;
+            display: inline-block;
+            white-space: normal;
+            word-wrap: break-word;
         }
 
         /* Final page - single photo takes entire page */
@@ -1184,6 +1188,81 @@
             border-radius: 15px;
             color: #ff1744;
             font-weight: 600;
+        }
+
+        /* Styles pour page d'introduction */
+        .intro-page-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+        }
+
+        .intro-title {
+            font-family: 'Pacifico', cursive;
+            font-size: 3.5rem;
+            color: #ff1744;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(255, 23, 68, 0.2);
+            line-height: 1.4;
+        }
+
+        .intro-subtitle {
+            font-family: 'Pacifico', cursive;
+            font-size: 2rem;
+            color: #ff8a9a;
+            margin-top: 10px;
+        }
+
+        .intro-heart-big {
+            font-size: 5rem;
+            margin: 30px 0;
+            animation: heartbeat-intro 1.5s infinite;
+        }
+
+        @keyframes heartbeat-intro {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        /* Styles pour page de conclusion */
+        .conclusion-page-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            padding: 80px;
+        }
+
+        .conclusion-text {
+            font-family: 'Pacifico', cursive;
+            font-size: 1.8rem;
+            color: #555;
+            line-height: 1.8;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(255, 23, 68, 0.15);
+            border: 3px solid #ff1744;
+        }
+
+        .conclusion-text .highlight {
+            color: #ff1744;
+            font-size: 2rem;
+        }
+
+        .conclusion-hearts {
+            margin-top: 30px;
+            font-size: 3rem;
         }
 
         .gallery-nav {
@@ -1344,7 +1423,7 @@
                     <button class="nav-btn" id="prevBtn" disabled>← Précédent</button>
                     <button class="nav-btn" id="nextBtn">Suivant →</button>
                 </div>
-                <div class="photo-counter" id="photoCounter">Page 1 / 6</div>
+                <div class="photo-counter" id="photoCounter">Page 1 / 10</div>
             </div>
         </div>
     </div>
@@ -1354,70 +1433,78 @@
 
     <script>
         // ===== CONFIGURATION - PERSONNALISE ICI =====
+        const introPage = {
+            isIntro: true
+        };
+        
+        const conclusionPage = {
+            isConclusion: true
+        };
+        
         const photos = [
             {
-                src: 'images/image_1.jpg', // Laisse vide pour afficher le placeholder
-                description: 'Notre premier rendez-vous - ce moment où tout a commencé ❤️'
+                src: 'images/image_1.jpg',
+                description: 'A shrimp picking up a diva on the street 🦐'
             },
             {
                 src: 'images/image_2.jpg',
-                description: 'Cette fois où on a ri jusqu\'à en avoir mal au ventre 😂💕'
+                description: 'Every man would dream of such a gorgeous girl for his first date 💕'
             },
             {
                 src: 'images/image_3.jpg',
-                description: 'Notre aventure préférée ensemble 🌟'
+                description: 'This elevator has seen a lot hahaha'
             },
             {
                 src: 'images/image_4.jpg',
-                description: 'Le jour où j\'ai su que tu étais spéciale 💖'
+                description: 'the sun suits you so well my baby 💝'
             },
             {
                 src: 'images/image_5.jpg',
-                description: 'Tous ces moments qui rendent chaque jour meilleur 🥰'
+                description: 'Florence babyyyyyyy'
             },
             {
                 src: 'images/image_6.jpg',
-                description: 'Notre complicité unique 💕'
+                description: 'Listening to you talking about the architecture while walking around made you look so hot baby 💋'
             },
             {
                 src: 'images/image_7.jpg',
-                description: 'Les fous rires partagés ✨'
+                description: 'ouf this panna cotta was sooo good baby'
             },
             {
                 src: 'images/image_8.jpg',
-                description: 'Chaque instant avec toi est précieux 💝'
+                description: 'Saying goodbye is the hardest part when every second with you feels so perfect miu 💕'
             },
             {
                 src: 'images/image_9.jpg',
-                description: 'Ce moment magique qu\'on ne pourra jamais oublier 🌙'
+                description: 'Welcome back to PARIIIIIIIS 🥐🥐🥐'
             },
             {
                 src: 'images/image_10.jpg',
-                description: 'Quand nos regards se sont croisés pour la première fois 👀✨'
+                description: 'Throwback to where you got me addicted 👀'
             },
             {
                 src: 'images/image_11.jpg',
-                description: 'Cette journée parfaite passée ensemble 🌈'
+                description: 'I am so in love with your smile ouuuuuf'
             },
             {
                 src: 'images/image_12.jpg',
-                description: 'Nos sorties spontanées inoubliables 🎉'
+                description: 'Ice skating together aaah so romantic mon cœur🌹'
             },
             {
                 src: 'images/image_13.jpg',
-                description: 'Ce jour où tu m\'as fait découvrir ton monde 🌍'
+                description: 'I looove listening to you in public you always sound so smart hehe'
             },
             {
                 src: 'images/image_14.jpg',
-                description: 'Nos conversations jusqu\'au bout de la nuit 🌙✨'
+                description: 'In front of the sacré cœur but the one having mine is right next to me 💝'
             },
             {
                 src: 'images/image_15.jpg',
-                description: 'Cette chanson qui sera toujours la nôtre 🎵💕'
+                description: 'Goodbyes are always so hard...'
             },
             {
                 src: 'images/image_16.jpg',
-                description: 'Tous les petits moments qui comptent énormément 💫'
+                description: '... but it is a real blessing to have someone to miss that much 💓'
             }
         ];
         // ===== FIN DE LA CONFIGURATION =====
@@ -1435,7 +1522,7 @@
                     return new Promise((resolve, reject) => {
                         const img = new Image();
                         img.onload = () => resolve();
-                        img.onerror = () => resolve(); // Continue même si une image échoue
+                        img.onerror = () => resolve();
                         img.src = photo.src;
                     });
                 });
@@ -1495,11 +1582,9 @@
             const maxX = containerRect.width - btnRect.width;
             const maxY = containerRect.height - btnRect.height;
             
-            // Get current position
             const currentLeft = parseFloat(button.style.left) || 0;
             const currentTop = parseFloat(button.style.top) || containerRect.height / 2 - btnRect.height / 2;
             
-            // Generate new position far from current position
             let x, y;
             let attempts = 0;
             do {
@@ -1521,10 +1606,8 @@
         }
 
         function setupNoButton(button, nextPageOnClick) {
-            // Move on hover
             button.addEventListener('mouseenter', () => moveNoButton(button));
             
-            // Move when mouse gets close
             let lastMoveTime = 0;
             const mouseMoveHandler = (e) => {
                 const now = Date.now();
@@ -1547,21 +1630,17 @@
             
             button.parentElement.addEventListener('mousemove', mouseMoveHandler);
 
-            // When clicked, go to next page
             button.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                // Always go to next page when they manage to click
                 goToPage(nextPageOnClick);
             });
         }
 
-        // Setup all No buttons
         setupNoButton(btnNo, '1b');
         setupNoButton(btnNo2, '1c');
         setupNoButton(btnNo3, '1d');
 
-        // Yes button - go to envelope page
         btnYes.addEventListener('click', () => {
             goToPage(2);
         });
@@ -1589,19 +1668,62 @@
             }, 1500);
         });
 
-        // Next arrow - go to gallery
         nextArrow.addEventListener('click', () => {
             goToPage(3);
             updateAlbumPage('init');
-            // Hide the arrow when entering the gallery
             nextArrow.classList.remove('visible');
         });
 
         // Photo gallery - DIY Scrapbook style with page turn
-        let albumPages = [null, null]; // Double buffer: [current page element, next/prev page element]
+        let albumPages = [null, null];
         
         function createPageContent(pageIndex) {
-            const startIndex = pageIndex * PHOTOS_PER_PAGE;
+            // Page d'introduction (page 0)
+            if (pageIndex === 0) {
+                return `
+                    <div class="intro-page-content">
+                        <div class="page-border-deco"></div>
+                        <div class="ribbon-deco ribbon-top-left"></div>
+                        <div class="ribbon-deco ribbon-bottom-right"></div>
+                        <div class="corner-deco corner-top-right"></div>
+                        <div class="corner-deco corner-bottom-left"></div>
+                        <div class="flower-deco flower-1">🌸</div>
+                        <div class="flower-deco flower-2">🌺</div>
+                        <div class="flower-deco flower-3">🌼</div>
+                        <div class="flower-deco flower-4">🌷</div>
+                        <div class="intro-title">And for you my love<br/>some memories...</div>
+                        <div class="intro-heart-big">💕</div>
+                    </div>
+                `;
+            }
+            
+            // Page de conclusion (dernière page)
+            const totalPages = Math.ceil(photos.length / PHOTOS_PER_PAGE) + 2; // +2 pour intro et conclusion
+            if (pageIndex === totalPages - 1) {
+                return `
+                    <div class="conclusion-page-content">
+                        <div class="page-border-deco"></div>
+                        <div class="ribbon-deco ribbon-top-left"></div>
+                        <div class="ribbon-deco ribbon-bottom-right"></div>
+                        <div class="corner-deco corner-top-right"></div>
+                        <div class="corner-deco corner-bottom-left"></div>
+                        <div class="flower-deco flower-1">🌸</div>
+                        <div class="flower-deco flower-2">🌺</div>
+                        <div class="flower-deco flower-3">🌼</div>
+                        <div class="flower-deco flower-4">🌷</div>
+                        <div class="conclusion-text">
+                            Thank you for everything mon amour, I am so happy I met you you are the best partner I could dream of.<br/><br/>
+                            <span class="highlight">I Love you Amaliya</span>
+                        </div>
+                        <div class="conclusion-hearts">💕 ❤️ 💖</div>
+                    </div>
+                `;
+            }
+            
+            // Pages normales avec photos (pageIndex 1 à 8)
+            // On ajuste l'index pour les photos car pageIndex 0 = intro
+            const photoPageIndex = pageIndex - 1;
+            const startIndex = photoPageIndex * PHOTOS_PER_PAGE;
             const endIndex = Math.min(startIndex + PHOTOS_PER_PAGE, photos.length);
             
             let html = `
@@ -1655,14 +1777,14 @@
         function updateAlbumPage(direction = 'init') {
             if (isPageTurning && direction !== 'init') return;
             
-            const totalPages = Math.ceil(photos.length / PHOTOS_PER_PAGE);
+            // Total pages = 1 intro + pages photos + 1 conclusion
+            const totalPages = Math.ceil(photos.length / PHOTOS_PER_PAGE) + 2;
             const albumPageWrapper = document.querySelector('.album-page-wrapper');
             const prevBtn = document.getElementById('prevBtn');
             const nextBtn = document.getElementById('nextBtn');
             const photoCounter = document.getElementById('photoCounter');
             
             if (direction === 'init') {
-                // Initial setup
                 albumPageWrapper.innerHTML = '';
                 const currentPage = document.createElement('div');
                 currentPage.className = 'album-page current';
@@ -1672,27 +1794,21 @@
             } else {
                 isPageTurning = true;
                 
-                // Get current page
                 const currentPage = albumPageWrapper.querySelector('.album-page.current');
                 
-                // Create new page with new content
                 const newPage = document.createElement('div');
                 newPage.className = 'album-page';
                 newPage.style.opacity = '1';
                 
                 if (direction === 'next') {
-                    // Going forward
                     newPage.classList.add('next');
                     newPage.innerHTML = createPageContent(currentPageIndex);
                     albumPageWrapper.appendChild(newPage);
                     
-                    // Force reflow
                     void newPage.offsetHeight;
                     
-                    // Petit délai pour s'assurer que tout est rendu
                     requestAnimationFrame(() => {
                         requestAnimationFrame(() => {
-                            // Start animation
                             currentPage.classList.add('animating-forward');
                         });
                     });
@@ -1706,18 +1822,14 @@
                     }, 700);
                     
                 } else if (direction === 'prev') {
-                    // Going backward
                     newPage.classList.add('prev');
                     newPage.innerHTML = createPageContent(currentPageIndex);
                     albumPageWrapper.appendChild(newPage);
                     
-                    // Force reflow
                     void newPage.offsetHeight;
                     
-                    // Petit délai pour s'assurer que tout est rendu
                     requestAnimationFrame(() => {
                         requestAnimationFrame(() => {
-                            // Start animation
                             newPage.classList.remove('prev');
                             newPage.classList.add('animating-backward');
                             currentPage.classList.add('next');
@@ -1734,7 +1846,6 @@
                 }
             }
             
-            // Update UI
             photoCounter.textContent = `Page ${currentPageIndex + 1} / ${totalPages}`;
             prevBtn.disabled = currentPageIndex === 0;
             nextBtn.disabled = currentPageIndex === totalPages - 1;
@@ -1748,7 +1859,7 @@
         });
 
         document.getElementById('nextBtn').addEventListener('click', () => {
-            const totalPages = Math.ceil(photos.length / PHOTOS_PER_PAGE);
+            const totalPages = Math.ceil(photos.length / PHOTOS_PER_PAGE) + 2;
             if (currentPageIndex < totalPages - 1 && !isPageTurning) {
                 currentPageIndex++;
                 updateAlbumPage('next');
