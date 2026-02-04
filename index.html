@@ -540,7 +540,8 @@
             width: 100%;
             height: 700px;
             transform-style: preserve-3d;
-            perspective: 2000px;
+            perspective: 2500px;
+            perspective-origin: 50% 50%;
         }
 
         .album-page {
@@ -552,75 +553,99 @@
             transform-origin: left center;
             transform-style: preserve-3d;
             backface-visibility: hidden;
+            will-change: transform;
+            transition: none;
         }
 
-        .album-page.turning-forward {
-            animation: pageTurnForward 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        /* Page visible actuelle */
+        .album-page.current {
+            transform: perspective(2500px) rotateY(0deg) translateZ(0);
+            z-index: 2;
         }
 
-        .album-page.turning-backward {
-            animation: pageTurnBackward 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        /* Page suivante (cachée derrière) */
+        .album-page.next {
+            transform: perspective(2500px) rotateY(0deg) translateZ(-1px);
+            z-index: 1;
         }
 
-        @keyframes pageTurnForward {
+        /* Page précédente (retournée) */
+        .album-page.prev {
+            transform: perspective(2500px) rotateY(-180deg) translateZ(-1px);
+            z-index: 1;
+        }
+
+        /* Animation tournage vers l'avant */
+        .album-page.animating-forward {
+            z-index: 3;
+            animation: smoothPageTurnForward 1s cubic-bezier(0.34, 0.48, 0.42, 1) forwards;
+        }
+
+        /* Animation tournage vers l'arrière */
+        .album-page.animating-backward {
+            z-index: 3;
+            animation: smoothPageTurnBackward 1s cubic-bezier(0.34, 0.48, 0.42, 1) forwards;
+        }
+
+        @keyframes smoothPageTurnForward {
             0% {
-                transform: perspective(2000px) rotateY(0deg) translateZ(0px) scale(1);
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-                opacity: 1;
+                transform: perspective(2500px) rotateY(0deg) translateZ(0) translateX(0);
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
             }
-            15% {
-                transform: perspective(2000px) rotateY(-15deg) translateZ(50px) scale(1.02);
-                box-shadow: -5px 25px 70px rgba(0, 0, 0, 0.3);
+            10% {
+                transform: perspective(2500px) rotateY(-10deg) translateZ(20px) translateX(-5px);
+                box-shadow: -8px 20px 65px rgba(0, 0, 0, 0.22);
             }
-            40% {
-                transform: perspective(2000px) rotateY(-80deg) translateZ(80px) scale(1.05);
-                box-shadow: -20px 30px 90px rgba(0, 0, 0, 0.35);
-                opacity: 0.9;
+            25% {
+                transform: perspective(2500px) rotateY(-35deg) translateZ(60px) translateX(-15px);
+                box-shadow: -18px 25px 75px rgba(0, 0, 0, 0.28);
             }
-            60% {
-                transform: perspective(2000px) rotateY(-100deg) translateZ(80px) scale(1.05);
-                box-shadow: -25px 30px 90px rgba(0, 0, 0, 0.35);
-                opacity: 0.8;
+            50% {
+                transform: perspective(2500px) rotateY(-90deg) translateZ(100px) translateX(-30px);
+                box-shadow: -35px 30px 90px rgba(0, 0, 0, 0.32);
             }
-            85% {
-                transform: perspective(2000px) rotateY(-165deg) translateZ(50px) scale(1.02);
-                box-shadow: -5px 25px 70px rgba(0, 0, 0, 0.3);
+            75% {
+                transform: perspective(2500px) rotateY(-145deg) translateZ(60px) translateX(-15px);
+                box-shadow: -18px 25px 75px rgba(0, 0, 0, 0.28);
+            }
+            90% {
+                transform: perspective(2500px) rotateY(-170deg) translateZ(20px) translateX(-5px);
+                box-shadow: -8px 20px 65px rgba(0, 0, 0, 0.22);
             }
             100% {
-                transform: perspective(2000px) rotateY(-180deg) translateZ(0px) scale(1);
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-                opacity: 1;
+                transform: perspective(2500px) rotateY(-180deg) translateZ(0) translateX(0);
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
             }
         }
 
-        @keyframes pageTurnBackward {
+        @keyframes smoothPageTurnBackward {
             0% {
-                transform: perspective(2000px) rotateY(-180deg) translateZ(0px) scale(1);
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-                opacity: 1;
+                transform: perspective(2500px) rotateY(-180deg) translateZ(0) translateX(0);
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
             }
-            15% {
-                transform: perspective(2000px) rotateY(-165deg) translateZ(50px) scale(1.02);
-                box-shadow: -5px 25px 70px rgba(0, 0, 0, 0.3);
+            10% {
+                transform: perspective(2500px) rotateY(-170deg) translateZ(20px) translateX(-5px);
+                box-shadow: -8px 20px 65px rgba(0, 0, 0, 0.22);
             }
-            40% {
-                transform: perspective(2000px) rotateY(-100deg) translateZ(80px) scale(1.05);
-                box-shadow: -25px 30px 90px rgba(0, 0, 0, 0.35);
-                opacity: 0.8;
+            25% {
+                transform: perspective(2500px) rotateY(-145deg) translateZ(60px) translateX(-15px);
+                box-shadow: -18px 25px 75px rgba(0, 0, 0, 0.28);
             }
-            60% {
-                transform: perspective(2000px) rotateY(-80deg) translateZ(80px) scale(1.05);
-                box-shadow: -20px 30px 90px rgba(0, 0, 0, 0.35);
-                opacity: 0.9;
+            50% {
+                transform: perspective(2500px) rotateY(-90deg) translateZ(100px) translateX(-30px);
+                box-shadow: -35px 30px 90px rgba(0, 0, 0, 0.32);
             }
-            85% {
-                transform: perspective(2000px) rotateY(-15deg) translateZ(50px) scale(1.02);
-                box-shadow: -5px 25px 70px rgba(0, 0, 0, 0.3);
+            75% {
+                transform: perspective(2500px) rotateY(-35deg) translateZ(60px) translateX(-15px);
+                box-shadow: -18px 25px 75px rgba(0, 0, 0, 0.28);
+            }
+            90% {
+                transform: perspective(2500px) rotateY(-10deg) translateZ(20px) translateX(-5px);
+                box-shadow: -8px 20px 65px rgba(0, 0, 0, 0.22);
             }
             100% {
-                transform: perspective(2000px) rotateY(0deg) translateZ(0px) scale(1);
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-                opacity: 1;
+                transform: perspective(2500px) rotateY(0deg) translateZ(0) translateX(0);
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
             }
         }
 
@@ -1279,9 +1304,7 @@
             <h2 class="gallery-title">Nos souvenirs 📸</h2>
             <div class="album-book">
                 <div class="album-page-wrapper">
-                    <div class="album-page" id="currentAlbumPage">
-                        <!-- Photos will be inserted here by JavaScript -->
-                    </div>
+                    <!-- Pages will be dynamically created here -->
                 </div>
                 <div class="gallery-nav">
                     <button class="nav-btn" id="prevBtn" disabled>← Précédent</button>
@@ -1515,129 +1538,138 @@
         // Next arrow - go to gallery
         nextArrow.addEventListener('click', () => {
             goToPage(3);
-            updateAlbumPage();
+            updateAlbumPage('init');
             // Hide the arrow when entering the gallery
             nextArrow.classList.remove('visible');
         });
 
         // Photo gallery - DIY Scrapbook style with page turn
-        function updateAlbumPage(direction = 'next') {
-            if (isPageTurning) return;
-            
-            const totalPages = Math.ceil(photos.length / PHOTOS_PER_PAGE);
-            const startIndex = currentPageIndex * PHOTOS_PER_PAGE;
+        let albumPages = [null, null]; // Double buffer: [current page element, next/prev page element]
+        
+        function createPageContent(pageIndex) {
+            const startIndex = pageIndex * PHOTOS_PER_PAGE;
             const endIndex = Math.min(startIndex + PHOTOS_PER_PAGE, photos.length);
             
-            const albumPage = document.getElementById('currentAlbumPage');
+            let html = `
+                <div class="page-border-deco"></div>
+                <div class="ribbon-deco ribbon-top-left"></div>
+                <div class="ribbon-deco ribbon-bottom-right"></div>
+                <div class="corner-deco corner-top-right"></div>
+                <div class="corner-deco corner-bottom-left"></div>
+                <div class="flower-deco flower-1">🌸</div>
+                <div class="flower-deco flower-2">🌺</div>
+                <div class="flower-deco flower-3">🌼</div>
+                <div class="flower-deco flower-4">🌷</div>
+                <div class="confetti-deco confetti-1"></div>
+                <div class="confetti-deco confetti-2"></div>
+                <div class="confetti-deco confetti-3"></div>
+                <div class="confetti-deco confetti-4"></div>
+                <div class="confetti-deco confetti-5"></div>
+                <div class="confetti-deco confetti-6"></div>
+                <div class="mini-heart mini-heart-1">💕</div>
+                <div class="mini-heart mini-heart-2">💕</div>
+                <div class="mini-heart mini-heart-3">💕</div>
+            `;
+            
+            for (let i = startIndex; i < endIndex; i++) {
+                const photo = photos[i];
+                const isFirstPhoto = (i - startIndex) === 0;
+                
+                html += `
+                    <div class="photo-item ${isFirstPhoto ? 'top-left' : 'bottom-right'}">
+                        <div class="photo-frame-diy">
+                            <div class="tape top-left"></div>
+                            <div class="tape top-right"></div>
+                            <div class="tape ${isFirstPhoto ? 'bottom-left' : 'bottom-right-tape'}"></div>
+                            <div class="photo-inner">
+                                ${photo.src ? 
+                                    `<img src="${photo.src}" alt="${photo.description}">` : 
+                                    `<div class="photo-placeholder">Photo ${i + 1}</div>`
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="caption-box ${isFirstPhoto ? 'top-right-caption' : 'bottom-left-caption'}">
+                        <div class="caption-text">${photo.description}</div>
+                    </div>
+                `;
+            }
+            
+            return html;
+        }
+        
+        function updateAlbumPage(direction = 'init') {
+            if (isPageTurning && direction !== 'init') return;
+            
+            const totalPages = Math.ceil(photos.length / PHOTOS_PER_PAGE);
+            const albumPageWrapper = document.querySelector('.album-page-wrapper');
             const prevBtn = document.getElementById('prevBtn');
             const nextBtn = document.getElementById('nextBtn');
             const photoCounter = document.getElementById('photoCounter');
-
-            // Page turn animation
-            if (direction !== 'init') {
+            
+            if (direction === 'init') {
+                // Initial setup
+                albumPageWrapper.innerHTML = '';
+                const currentPage = document.createElement('div');
+                currentPage.className = 'album-page current';
+                currentPage.innerHTML = createPageContent(currentPageIndex);
+                albumPageWrapper.appendChild(currentPage);
+            } else {
                 isPageTurning = true;
                 
-                // Apply different animation based on direction
-                if (direction === 'next') {
-                    albumPage.classList.add('turning-forward');
-                } else if (direction === 'prev') {
-                    albumPage.classList.add('turning-backward');
-                }
+                // Get current page
+                const currentPage = albumPageWrapper.querySelector('.album-page.current');
                 
-                setTimeout(() => {
-                    albumPage.classList.remove('turning-forward', 'turning-backward');
-                    isPageTurning = false;
-                    renderPage();
-                }, 800);
-            } else {
-                renderPage();
-            }
-
-            function renderPage() {
-                // Clear existing content
-                albumPage.innerHTML = '';
-
-                // Add page decorations
-                const decorations = `
-                    <div class="page-border-deco"></div>
-                    <div class="ribbon-deco ribbon-top-left"></div>
-                    <div class="ribbon-deco ribbon-bottom-right"></div>
-                    <div class="corner-deco corner-top-right"></div>
-                    <div class="corner-deco corner-bottom-left"></div>
-                    <div class="flower-deco flower-1">🌸</div>
-                    <div class="flower-deco flower-2">🌺</div>
-                    <div class="flower-deco flower-3">🌼</div>
-                    <div class="flower-deco flower-4">🌷</div>
-                    <div class="confetti-deco confetti-1"></div>
-                    <div class="confetti-deco confetti-2"></div>
-                    <div class="confetti-deco confetti-3"></div>
-                    <div class="confetti-deco confetti-4"></div>
-                    <div class="confetti-deco confetti-5"></div>
-                    <div class="confetti-deco confetti-6"></div>
-                    <div class="mini-heart mini-heart-1">💕</div>
-                    <div class="mini-heart mini-heart-2">💕</div>
-                    <div class="mini-heart mini-heart-3">💕</div>
-                `;
-                albumPage.insertAdjacentHTML('beforeend', decorations);
-
-                // Add photos for current page
-                for (let i = startIndex; i < endIndex; i++) {
-                    const photo = photos[i];
-                    const isFirstPhoto = (i - startIndex) === 0;
+                // Create new page with new content
+                const newPage = document.createElement('div');
+                newPage.className = 'album-page';
+                
+                if (direction === 'next') {
+                    // Going forward
+                    newPage.classList.add('next');
+                    newPage.innerHTML = createPageContent(currentPageIndex);
+                    albumPageWrapper.appendChild(newPage);
                     
-                    // Create photo item
-                    const photoItem = document.createElement('div');
-                    photoItem.className = `photo-item ${isFirstPhoto ? 'top-left' : 'bottom-right'}`;
+                    // Force reflow
+                    newPage.offsetHeight;
                     
-                    // Photo frame
-                    const photoFrame = document.createElement('div');
-                    photoFrame.className = 'photo-frame-diy';
+                    // Start animation
+                    currentPage.classList.add('animating-forward');
                     
-                    // Tape pieces
-                    const tapePositions = ['top-left', 'top-right', isFirstPhoto ? 'bottom-left' : 'bottom-right-tape'];
-                    tapePositions.forEach(pos => {
-                        const tape = document.createElement('div');
-                        tape.className = `tape ${pos}`;
-                        photoFrame.appendChild(tape);
-                    });
+                    setTimeout(() => {
+                        currentPage.remove();
+                        newPage.classList.remove('next');
+                        newPage.classList.add('current');
+                        isPageTurning = false;
+                    }, 1000);
                     
-                    // Photo inner
-                    const photoInner = document.createElement('div');
-                    photoInner.className = 'photo-inner';
+                } else if (direction === 'prev') {
+                    // Going backward
+                    newPage.classList.add('prev');
+                    newPage.innerHTML = createPageContent(currentPageIndex);
+                    albumPageWrapper.appendChild(newPage);
                     
-                    if (photo.src) {
-                        const img = document.createElement('img');
-                        img.src = photo.src;
-                        img.alt = photo.description;
-                        photoInner.appendChild(img);
-                    } else {
-                        const placeholder = document.createElement('div');
-                        placeholder.className = 'photo-placeholder';
-                        placeholder.textContent = 'Photo ' + (i + 1);
-                        photoInner.appendChild(placeholder);
-                    }
+                    // Force reflow
+                    newPage.offsetHeight;
                     
-                    photoFrame.appendChild(photoInner);
-                    photoItem.appendChild(photoFrame);
-                    albumPage.appendChild(photoItem);
-
-                    // Caption box
-                    const captionBox = document.createElement('div');
-                    captionBox.className = `caption-box ${isFirstPhoto ? 'top-right-caption' : 'bottom-left-caption'}`;
+                    // Start animation
+                    newPage.classList.remove('prev');
+                    newPage.classList.add('animating-backward');
+                    currentPage.classList.add('next');
                     
-                    const captionText = document.createElement('div');
-                    captionText.className = 'caption-text';
-                    captionText.textContent = photo.description;
-                    
-                    captionBox.appendChild(captionText);
-                    albumPage.appendChild(captionBox);
+                    setTimeout(() => {
+                        currentPage.remove();
+                        newPage.classList.remove('animating-backward');
+                        newPage.classList.add('current');
+                        isPageTurning = false;
+                    }, 1000);
                 }
-
-                // Update counter and buttons
-                photoCounter.textContent = `Page ${currentPageIndex + 1} / ${totalPages}`;
-                prevBtn.disabled = currentPageIndex === 0;
-                nextBtn.disabled = currentPageIndex === totalPages - 1;
             }
+            
+            // Update UI
+            photoCounter.textContent = `Page ${currentPageIndex + 1} / ${totalPages}`;
+            prevBtn.disabled = currentPageIndex === 0;
+            nextBtn.disabled = currentPageIndex === totalPages - 1;
         }
 
         document.getElementById('prevBtn').addEventListener('click', () => {
