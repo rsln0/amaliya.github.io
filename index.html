@@ -550,21 +550,61 @@
             background: white;
             padding: 60px;
             transform-origin: left center;
-            transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1);
             transform-style: preserve-3d;
             backface-visibility: hidden;
         }
 
-        .album-page.turning {
-            animation: pageTurn 1.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+        .album-page.turning-forward {
+            animation: pageTurnForward 1s cubic-bezier(0.4, 0.0, 0.2, 1);
         }
 
-        @keyframes pageTurn {
+        .album-page.turning-backward {
+            animation: pageTurnBackward 1s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        @keyframes pageTurnForward {
             0% {
-                transform: rotateY(0deg);
+                transform: rotateY(0deg) translateZ(0px);
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            }
+            20% {
+                transform: rotateY(-20deg) translateZ(100px);
+                box-shadow: -10px 20px 80px rgba(0, 0, 0, 0.35);
+            }
+            50% {
+                transform: rotateY(-90deg) translateZ(150px);
+                box-shadow: -30px 20px 100px rgba(0, 0, 0, 0.4);
+            }
+            80% {
+                transform: rotateY(-160deg) translateZ(100px);
+                box-shadow: -10px 20px 80px rgba(0, 0, 0, 0.35);
             }
             100% {
-                transform: rotateY(-180deg);
+                transform: rotateY(-180deg) translateZ(0px);
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            }
+        }
+
+        @keyframes pageTurnBackward {
+            0% {
+                transform: rotateY(-180deg) translateZ(0px);
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            }
+            20% {
+                transform: rotateY(-160deg) translateZ(100px);
+                box-shadow: -10px 20px 80px rgba(0, 0, 0, 0.35);
+            }
+            50% {
+                transform: rotateY(-90deg) translateZ(150px);
+                box-shadow: -30px 20px 100px rgba(0, 0, 0, 0.4);
+            }
+            80% {
+                transform: rotateY(-20deg) translateZ(100px);
+                box-shadow: -10px 20px 80px rgba(0, 0, 0, 0.35);
+            }
+            100% {
+                transform: rotateY(0deg) translateZ(0px);
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
             }
         }
 
@@ -1460,6 +1500,8 @@
         nextArrow.addEventListener('click', () => {
             goToPage(3);
             updateAlbumPage();
+            // Hide the arrow when entering the gallery
+            nextArrow.classList.remove('visible');
         });
 
         // Photo gallery - DIY Scrapbook style with page turn
@@ -1478,13 +1520,19 @@
             // Page turn animation
             if (direction !== 'init') {
                 isPageTurning = true;
-                albumPage.classList.add('turning');
+                
+                // Apply different animation based on direction
+                if (direction === 'next') {
+                    albumPage.classList.add('turning-forward');
+                } else if (direction === 'prev') {
+                    albumPage.classList.add('turning-backward');
+                }
                 
                 setTimeout(() => {
-                    albumPage.classList.remove('turning');
+                    albumPage.classList.remove('turning-forward', 'turning-backward');
                     isPageTurning = false;
                     renderPage();
-                }, 600);
+                }, 1000);
             } else {
                 renderPage();
             }
