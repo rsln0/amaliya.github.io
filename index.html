@@ -1307,6 +1307,106 @@
             color: #ff1744;
             font-weight: 600;
         }
+
+        /* Modal pour zoom photo */
+        .photo-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .photo-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .photo-modal-content {
+            max-width: 95vw;
+            max-height: 95vh;
+            position: relative;
+            animation: zoomIn 0.3s ease-out;
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .photo-modal-content img {
+            max-width: 100%;
+            max-height: 95vh;
+            width: auto;
+            height: auto;
+            display: block;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+        }
+
+        .photo-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 2rem;
+            color: #ff1744;
+            transition: all 0.3s ease;
+            z-index: 10001;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .photo-modal-close:hover {
+            background: white;
+            transform: scale(1.1) rotate(90deg);
+        }
+
+        .photo-modal-close::before {
+            content: '×';
+        }
+
+        .photo-modal-caption {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-family: 'Pacifico', cursive;
+            color: #555;
+            font-size: 1.2rem;
+            max-width: 80%;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            border-left: 4px solid #ff1744;
+        }
+
+        /* Cursor pointer sur les photos cliquables */
+        .photo-inner {
+            cursor: zoom-in;
+        }
     </style>
 </head>
 <body>
@@ -1431,6 +1531,15 @@
     <!-- Next arrow (appears after envelope opens) -->
     <div class="next-arrow" id="nextArrow"></div>
 
+    <!-- Photo Modal pour zoom -->
+    <div class="photo-modal" id="photoModal">
+        <div class="photo-modal-close" id="photoModalClose"></div>
+        <div class="photo-modal-content">
+            <img id="photoModalImg" src="" alt="">
+            <div class="photo-modal-caption" id="photoModalCaption"></div>
+        </div>
+    </div>
+
     <script>
         // ===== CONFIGURATION - PERSONNALISE ICI =====
         const introPage = {
@@ -1500,7 +1609,7 @@
             },
             {
                 src: 'images/image_15.jpg',
-                description: 'Goodbyes are always so hard...'
+                description: 'Goodbyes hare always so hard...'
             },
             {
                 src: 'images/image_16.jpg',
@@ -1869,6 +1978,62 @@
         // Initialize
         createFloatingHearts();
         preloadImages();
+
+        // Photo Modal Zoom
+        const photoModal = document.getElementById('photoModal');
+        const photoModalImg = document.getElementById('photoModalImg');
+        const photoModalCaption = document.getElementById('photoModalCaption');
+        const photoModalClose = document.getElementById('photoModalClose');
+
+        function openPhotoModal(imgSrc, caption) {
+            if (!imgSrc) return; // Ne pas ouvrir si pas d'image
+            photoModalImg.src = imgSrc;
+            photoModalCaption.textContent = caption;
+            photoModal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Empêcher le scroll
+        }
+
+        function closePhotoModal() {
+            photoModal.classList.remove('active');
+            document.body.style.overflow = ''; // Réactiver le scroll
+        }
+
+        // Fermer avec le bouton X
+        photoModalClose.addEventListener('click', (e) => {
+            e.stopPropagation();
+            closePhotoModal();
+        });
+
+        // Fermer en cliquant sur le fond noir
+        photoModal.addEventListener('click', (e) => {
+            if (e.target === photoModal) {
+                closePhotoModal();
+            }
+        });
+
+        // Fermer avec la touche Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && photoModal.classList.contains('active')) {
+                closePhotoModal();
+            }
+        });
+
+        // Délégation d'événements pour les clics sur les photos
+        document.addEventListener('click', (e) => {
+            // Vérifier si on a cliqué sur une image de photo
+            const photoImg = e.target.closest('.photo-inner img');
+            if (photoImg && !e.target.closest('.photo-modal')) {
+                const imgSrc = photoImg.src;
+                const photoItem = e.target.closest('.photo-item');
+                const captionBox = photoItem ? 
+                    (photoItem.classList.contains('top-left') ? 
+                        photoItem.parentElement.querySelector('.top-right-caption .caption-text') :
+                        photoItem.parentElement.querySelector('.bottom-left-caption .caption-text')) 
+                    : null;
+                const caption = captionBox ? captionBox.textContent : '';
+                openPhotoModal(imgSrc, caption);
+            }
+        });
     </script>
 </body>
 </html>
