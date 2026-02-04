@@ -555,66 +555,77 @@
             backface-visibility: hidden;
             will-change: transform;
             transition: none;
+            opacity: 1;
         }
 
         /* Page visible actuelle */
         .album-page.current {
             transform: perspective(2500px) rotateY(0deg) translateZ(0);
             z-index: 2;
+            opacity: 1;
         }
 
         /* Page suivante (cachée derrière) */
         .album-page.next {
             transform: perspective(2500px) rotateY(0deg) translateZ(-1px);
             z-index: 1;
+            opacity: 1;
         }
 
         /* Page précédente (retournée) */
         .album-page.prev {
             transform: perspective(2500px) rotateY(-180deg) translateZ(-1px);
             z-index: 1;
+            opacity: 1;
         }
 
         /* Animation tournage vers l'avant */
         .album-page.animating-forward {
             z-index: 3;
-            animation: smoothPageTurnForward 1s cubic-bezier(0.34, 0.48, 0.42, 1) forwards;
+            animation: smoothPageTurnForward 0.7s cubic-bezier(0.34, 0.48, 0.42, 1) forwards;
         }
 
         /* Animation tournage vers l'arrière */
         .album-page.animating-backward {
             z-index: 3;
-            animation: smoothPageTurnBackward 1s cubic-bezier(0.34, 0.48, 0.42, 1) forwards;
+            animation: smoothPageTurnBackward 0.7s cubic-bezier(0.34, 0.48, 0.42, 1) forwards;
         }
 
         @keyframes smoothPageTurnForward {
             0% {
                 transform: perspective(2500px) rotateY(0deg) translateZ(0) translateX(0);
                 box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+                opacity: 1;
             }
             10% {
                 transform: perspective(2500px) rotateY(-10deg) translateZ(20px) translateX(-5px);
                 box-shadow: -8px 20px 65px rgba(0, 0, 0, 0.22);
+                opacity: 1;
             }
             25% {
                 transform: perspective(2500px) rotateY(-35deg) translateZ(60px) translateX(-15px);
                 box-shadow: -18px 25px 75px rgba(0, 0, 0, 0.28);
+                opacity: 1;
             }
             50% {
                 transform: perspective(2500px) rotateY(-90deg) translateZ(100px) translateX(-30px);
                 box-shadow: -35px 30px 90px rgba(0, 0, 0, 0.32);
+                opacity: 1;
             }
             75% {
                 transform: perspective(2500px) rotateY(-145deg) translateZ(60px) translateX(-15px);
                 box-shadow: -18px 25px 75px rgba(0, 0, 0, 0.28);
+                opacity: 1;
             }
             90% {
                 transform: perspective(2500px) rotateY(-170deg) translateZ(20px) translateX(-5px);
                 box-shadow: -8px 20px 65px rgba(0, 0, 0, 0.22);
+                opacity: 1;
             }
             100% {
                 transform: perspective(2500px) rotateY(-180deg) translateZ(0) translateX(0);
                 box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+                opacity: 1;
             }
         }
 
@@ -622,31 +633,54 @@
             0% {
                 transform: perspective(2500px) rotateY(-180deg) translateZ(0) translateX(0);
                 box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+                opacity: 1;
             }
             10% {
                 transform: perspective(2500px) rotateY(-170deg) translateZ(20px) translateX(-5px);
                 box-shadow: -8px 20px 65px rgba(0, 0, 0, 0.22);
+                opacity: 1;
             }
             25% {
                 transform: perspective(2500px) rotateY(-145deg) translateZ(60px) translateX(-15px);
                 box-shadow: -18px 25px 75px rgba(0, 0, 0, 0.28);
+                opacity: 1;
             }
             50% {
                 transform: perspective(2500px) rotateY(-90deg) translateZ(100px) translateX(-30px);
                 box-shadow: -35px 30px 90px rgba(0, 0, 0, 0.32);
+                opacity: 1;
             }
             75% {
                 transform: perspective(2500px) rotateY(-35deg) translateZ(60px) translateX(-15px);
                 box-shadow: -18px 25px 75px rgba(0, 0, 0, 0.28);
+                opacity: 1;
             }
             90% {
                 transform: perspective(2500px) rotateY(-10deg) translateZ(20px) translateX(-5px);
                 box-shadow: -8px 20px 65px rgba(0, 0, 0, 0.22);
+                opacity: 1;
             }
             100% {
                 transform: perspective(2500px) rotateY(0deg) translateZ(0) translateX(0);
                 box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+                opacity: 1;
             }
+        }
+
+        /* Loading spinner pour les images */
+        .photo-inner.loading::after {
+            content: '⏳';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
         }
 
         .album-page::before {
@@ -1391,6 +1425,26 @@
         const PHOTOS_PER_PAGE = 2;
         let currentPageIndex = 0;
         let isPageTurning = false;
+        let imagesPreloaded = false;
+
+        // Précharger toutes les images au chargement de la page
+        function preloadImages() {
+            const imagePromises = photos
+                .filter(photo => photo.src)
+                .map(photo => {
+                    return new Promise((resolve, reject) => {
+                        const img = new Image();
+                        img.onload = () => resolve();
+                        img.onerror = () => resolve(); // Continue même si une image échoue
+                        img.src = photo.src;
+                    });
+                });
+            
+            Promise.all(imagePromises).then(() => {
+                imagesPreloaded = true;
+                console.log('All images preloaded!');
+            });
+        }
 
         // Create more floating hearts
         function createFloatingHearts() {
@@ -1581,9 +1635,9 @@
                             <div class="tape top-left"></div>
                             <div class="tape top-right"></div>
                             <div class="tape ${isFirstPhoto ? 'bottom-left' : 'bottom-right-tape'}"></div>
-                            <div class="photo-inner">
+                            <div class="photo-inner ${photo.src && !imagesPreloaded ? 'loading' : ''}">
                                 ${photo.src ? 
-                                    `<img src="${photo.src}" alt="${photo.description}">` : 
+                                    `<img src="${photo.src}" alt="${photo.description}" loading="eager" style="opacity: 1;">` : 
                                     `<div class="photo-placeholder">Photo ${i + 1}</div>`
                                 }
                             </div>
@@ -1612,6 +1666,7 @@
                 albumPageWrapper.innerHTML = '';
                 const currentPage = document.createElement('div');
                 currentPage.className = 'album-page current';
+                currentPage.style.opacity = '1';
                 currentPage.innerHTML = createPageContent(currentPageIndex);
                 albumPageWrapper.appendChild(currentPage);
             } else {
@@ -1623,6 +1678,7 @@
                 // Create new page with new content
                 const newPage = document.createElement('div');
                 newPage.className = 'album-page';
+                newPage.style.opacity = '1';
                 
                 if (direction === 'next') {
                     // Going forward
@@ -1631,17 +1687,23 @@
                     albumPageWrapper.appendChild(newPage);
                     
                     // Force reflow
-                    newPage.offsetHeight;
+                    void newPage.offsetHeight;
                     
-                    // Start animation
-                    currentPage.classList.add('animating-forward');
+                    // Petit délai pour s'assurer que tout est rendu
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            // Start animation
+                            currentPage.classList.add('animating-forward');
+                        });
+                    });
                     
                     setTimeout(() => {
                         currentPage.remove();
                         newPage.classList.remove('next');
                         newPage.classList.add('current');
+                        newPage.style.opacity = '1';
                         isPageTurning = false;
-                    }, 1000);
+                    }, 700);
                     
                 } else if (direction === 'prev') {
                     // Going backward
@@ -1650,19 +1712,25 @@
                     albumPageWrapper.appendChild(newPage);
                     
                     // Force reflow
-                    newPage.offsetHeight;
+                    void newPage.offsetHeight;
                     
-                    // Start animation
-                    newPage.classList.remove('prev');
-                    newPage.classList.add('animating-backward');
-                    currentPage.classList.add('next');
+                    // Petit délai pour s'assurer que tout est rendu
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            // Start animation
+                            newPage.classList.remove('prev');
+                            newPage.classList.add('animating-backward');
+                            currentPage.classList.add('next');
+                        });
+                    });
                     
                     setTimeout(() => {
                         currentPage.remove();
                         newPage.classList.remove('animating-backward');
                         newPage.classList.add('current');
+                        newPage.style.opacity = '1';
                         isPageTurning = false;
-                    }, 1000);
+                    }, 700);
                 }
             }
             
@@ -1689,6 +1757,7 @@
 
         // Initialize
         createFloatingHearts();
+        preloadImages();
     </script>
 </body>
 </html>
