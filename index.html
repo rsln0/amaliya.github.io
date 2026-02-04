@@ -1711,7 +1711,7 @@
             
             setTimeout(() => {
                 isMoving = false;
-            }, 150);
+            }, 200);
         }
 
         function setupNoButton(button, nextPageOnClick) {
@@ -1720,7 +1720,7 @@
             let lastMoveTime = 0;
             const mouseMoveHandler = (e) => {
                 const now = Date.now();
-                if (now - lastMoveTime < 150) return;
+                if (now - lastMoveTime < 200) return;
                 
                 const btnRect = button.getBoundingClientRect();
                 const btnCenterX = btnRect.left + btnRect.width / 2;
